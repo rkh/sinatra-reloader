@@ -6,23 +6,6 @@ require "sinatra/advanced_routes"
 module Sinatra
   Base.ignore_caller
 
-  # Advanced reloader for sinatra. Reloads only files that have changed and automatically
-  # detects orphaned routes that have to be removed. Files defining routes will be added
-  # to the reload list per default. Avoid reloading with dont_reload. Add other files to
-  # the reload list with also_reload.
-  #
-  # Usage:
-  #
-  #   require "big_band"
-  #   class Foo < Sinatra::Base
-  #     configure(:development) do
-  #       register BigBand::Reloader
-  #       also_reload "app/models/*.rb"
-  #       dont_reload "lib/**/*.rb"
-  #     end
-  #   end
-  #
-  # Per default this will only be acitvated in development mode.
   module Reloader
 
     class FileWatcher < Array
