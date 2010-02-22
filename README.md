@@ -21,8 +21,8 @@ Usage
 
 Simple example:
 
-  require "sinatra"
-  require "sinatra/reloader" if development?
+    require "sinatra"
+    require "sinatra/reloader" if development?
 
 More complex:
 
