@@ -101,4 +101,7 @@ module Sinatra
     end
 
   end
+
+  register Reloader
+
 end

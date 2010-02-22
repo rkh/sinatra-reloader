@@ -19,6 +19,13 @@ BigBand will setup the reloader automatically, but only in development mode.
 Usage
 -----
 
+Simple example:
+
+  require "sinatra"
+  require "sinatra/reloader" if development?
+
+More complex:
+
     require "sinatra/base"
     require "sinatra/reloader"
     
