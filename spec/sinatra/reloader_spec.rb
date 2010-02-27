@@ -5,20 +5,20 @@ describe Sinatra::Reloader do
   def app_file(file, content, go_sleeping = true)
     sleep 1 if go_sleeping
     file = File.expand_path(file, @temp_dir)
-    File.open(file, "w") { |f| f << "class ExampleApp < Sinatra::Base; #{content}; end" }
+    File.open(file, "w") { |f| f << "class ::ExampleApp < Sinatra::Base; #{content}; end" }
     require file
     file
   end
 
   def app
-    ExampleApp
+    ::ExampleApp
   end
 
   before :all do
     @temp_dir ||= File.expand_path "../../temp", __FILE__
     rm_rf @temp_dir
     mkdir_p @temp_dir
-    class ExampleApp < Sinatra::Base
+    class ::ExampleApp < Sinatra::Base
       register Sinatra::Reloader
     end
   end
