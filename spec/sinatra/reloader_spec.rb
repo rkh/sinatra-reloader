@@ -3,9 +3,17 @@ require File.expand_path("../../spec_helper", __FILE__)
 describe Sinatra::Reloader do
 
   def app_file(file, content, go_sleeping = true)
-    sleep 1 if go_sleeping
     file = File.expand_path(file, @temp_dir)
-    File.open(file, "w") { |f| f << "class ::ExampleApp < Sinatra::Base; #{content}; end" }
+    old_mtime = File.exist?(file) ? File.mtime(file) : Time.at(0)
+    new_mtime = old_mtime
+    # this is eventually faster than a hard coded sleep 1, also it adjusts to the systems
+    # mtime granularity
+    until new_mtime > old_mtime
+      File.open(file, "w") { |f| f << "class ::ExampleApp < Sinatra::Base; #{content}; end" }
+      new_mtime = File.mtime file
+      # ok, let's not generate too much io
+      sleep 0.1 if new_mtime == old_mtime
+    end
     require file
     file
   end
@@ -14,11 +22,13 @@ describe Sinatra::Reloader do
     ::ExampleApp
   end
 
-  before :all do
+  before do
     @temp_dir ||= File.expand_path "../../temp", __FILE__
     rm_rf @temp_dir
     mkdir_p @temp_dir
+    $LOADED_FEATURES.reject! { |f| f =~ /^#{@temp_dir}/ }
     class ::ExampleApp < Sinatra::Base
+      reset!
       register Sinatra::Reloader
     end
   end
@@ -36,14 +46,14 @@ describe Sinatra::Reloader do
 
   it "should not affact other routes" do
     app_file("example_app.rb", "get('/foo') { 'foo' }")
-    app_file("example_app2.rb", "get('/bar') { 'bar' }", false)
+    app_file("example_app2.rb", "get('/bar') { 'bar' }")
     browse_route(:get, '/bar').body.should == 'bar'
     app_file("example_app.rb", "get('/foo') { 'bar' }")
     browse_route(:get, '/bar').body.should == 'bar'
   end
 
   it "should respect dont_reload" do
-    file = app_file("example_app3.rb", "get('/baz') { 'foo' }", false)
+    file = app_file("example_app3.rb", "get('/baz') { 'foo' }")
     app.dont_reload file
     app_file("example_app3.rb", "get('/baz') { 'bar' }")
     browse_route(:get, '/baz').body.should == 'foo'
