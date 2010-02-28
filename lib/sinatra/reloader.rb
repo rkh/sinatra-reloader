@@ -20,8 +20,12 @@ module Sinatra
       end
 
       def self.new(file)
-        return nil unless File.exist? file
-        @map[file.realpath] ||= super
+        file = file.expand_path
+        begin
+          file = file.realpath
+        rescue Errno::ENOENT
+        end
+        @map[file] ||= super
       end
 
       class << self
@@ -74,6 +78,7 @@ module Sinatra
         files.flatten.each do |file|
           # Rubinius and JRuby ignore block passed to glob.
           Dir.glob(file).each { |f| FileWatcher[f].dont_reload! dont }
+          FileWatcher[file].dont_reload! dont
         end
       end
 
