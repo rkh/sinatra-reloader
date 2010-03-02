@@ -16,6 +16,11 @@ Check it out if you are looking for other fancy Sinatra extensions.
 
 BigBand will setup the reloader automatically, but only in development mode.
 
+Installation
+------------
+
+    gem install sinatra-reloader --prerelease
+
 Usage
 -----
 
