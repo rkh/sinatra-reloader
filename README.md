@@ -19,7 +19,7 @@ BigBand will setup the reloader automatically, but only in development mode.
 Installation
 ------------
 
-    gem install sinatra-reloader --prerelease
+    gem install sinatra-reloader
 
 Usage
 -----
