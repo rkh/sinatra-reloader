@@ -2,12 +2,12 @@ SPEC = Gem::Specification.new do |s|
 
   # Get the facts.
   s.name             = "sinatra-reloader"
-  s.version          = "0.4.0"
+  s.version          = "0.4.1"
   s.description      = "Smart and fast code reloader for Sinatra (part of BigBand)."
 
   # BigBand depedencies
-  s.add_dependency "sinatra-advanced-routes", "~> 0.4.0.0"
-  s.add_development_dependency "sinatra-test-helper", "~> 0.4.0.0"
+  s.add_dependency "sinatra-advanced-routes", "~> 0.4.0"
+  s.add_development_dependency "sinatra-test-helper", "~> 0.4.0"
 
   # External dependencies
   s.add_dependency "sinatra", ">= 0.9.4" # Works fine with 1.0!
