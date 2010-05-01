@@ -10,7 +10,7 @@ SPEC = Gem::Specification.new do |s|
   s.add_development_dependency "sinatra-test-helper", "~> 0.4.0"
 
   # External dependencies
-  s.add_dependency "sinatra", ">= 1.0"
+  s.add_dependency "sinatra", "~> 1.0"
   s.add_development_dependency "rspec", ">= 1.3.0"
 
   # Those should be about the same in any BigBand extension.
