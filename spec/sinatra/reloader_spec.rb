@@ -2,14 +2,17 @@ require File.expand_path("../../spec_helper", __FILE__)
 
 describe Sinatra::Reloader do
 
-  def app_file(file, content, go_sleeping = true)
+  def app_file(file, content)
     file = File.expand_path(file, @temp_dir)
     old_mtime = File.exist?(file) ? File.mtime(file) : Time.at(0)
     new_mtime = old_mtime
     # this is eventually faster than a hard coded sleep 1, also it adjusts to the systems
     # mtime granularity
     until new_mtime > old_mtime
-      File.open(file, "w") { |f| f << "class ::ExampleApp < Sinatra::Base; #{content}; end" }
+      File.open(file, "w") do |f|
+        f << "class ::ExampleApp < Sinatra::Base; #{content}; end\n"
+        yield f if block_given?
+      end
       new_mtime = File.mtime file
       # ok, let's not generate too much io
       sleep 0.1 if new_mtime == old_mtime
@@ -57,6 +60,14 @@ describe Sinatra::Reloader do
     app.dont_reload file
     app_file("example_app3.rb", "get('/baz') { 'bar' }")
     browse_route(:get, '/baz').body.should == 'foo'
+  end
+
+  it "reloads inline templates" do
+    file = app_file("example_app4.rb", "get('/foo') { haml :foo }") { |f| f.puts "__END__", "@@foo", "foo" }
+    app.set :inline_templates, file
+    browse_route(:get, '/foo').body.strip.should == "foo"
+    app_file("example_app4.rb", "get('/foo') { haml :foo }") { |f| f.puts "__END__", "@@foo", "bar" }
+    browse_route(:get, '/foo').body.strip.should == "bar"
   end
 
 end
