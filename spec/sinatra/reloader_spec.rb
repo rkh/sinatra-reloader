@@ -70,4 +70,18 @@ describe Sinatra::Reloader do
     browse_route(:get, '/foo').body.strip.should == "bar"
   end
 
+  it "should not readd middleware" do
+    3.times do
+      app_file "example_app5.rb", <<-RUBY
+        use Rack::Config do |env|
+          env['some.counter'] ||= 0
+          env['some.counter'] += 1
+          $counter = env['some.counter']
+        end
+      RUBY
+      browse_route :get, '/foo'
+    end
+    $counter.should == 1
+  end
+
 end
