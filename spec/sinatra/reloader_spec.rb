@@ -14,6 +14,7 @@ describe Sinatra::Reloader do
         f << "class ::ExampleApp < Sinatra::Base; #{content}; end\n"
         yield f if block_given?
       end
+      File.utime File.atime(file), old_mtime + 10, file unless ENV['MTIME']
       new_mtime = File.mtime file
       # ok, let's not generate too much io
       sleep 0.1 if new_mtime == old_mtime
