@@ -1,6 +1,7 @@
 require File.expand_path("../../spec_helper", __FILE__)
 
 describe Sinatra::Reloader do
+  it_should_behave_like 'sinatra'
 
   def app_file(file, content)
     file = File.expand_path(file, @temp_dir)
