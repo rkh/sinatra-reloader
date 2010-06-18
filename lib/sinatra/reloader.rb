@@ -1,4 +1,4 @@
-require "monkey"
+require "monkey-lib"
 require "sinatra/base"
 require "sinatra/sugar"
 require "sinatra/advanced_routes"
