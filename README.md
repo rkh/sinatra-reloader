@@ -24,12 +24,21 @@ Installation
 Usage
 -----
 
-Simple example:
+Simple usage:
 
-    require "sinatra"
-    require "sinatra/reloader" if development?
+  require "sinatra"
+  require "sinatra/reloader" if development?
 
 More complex:
+
+    require "sinatra"
+    
+    configure(:development) do |c|
+      require "sinatra/reloader"
+      c.also_reload "*.rb"
+    end
+
+Modular:
 
     require "sinatra/base"
     require "sinatra/reloader"
